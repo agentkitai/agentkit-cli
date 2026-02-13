@@ -1,6 +1,7 @@
 import { loadConfig } from "../config.js";
 import { SERVICE_REGISTRY } from "../services.js";
 import { execSync } from "node:child_process";
+import chalk from "chalk";
 
 export interface CheckResult {
   name: string;
@@ -96,9 +97,11 @@ export async function doctorCommand(opts: DoctorOptions): Promise<CheckResult[]>
 export function formatDoctorOutput(checks: CheckResult[]): string {
   return checks
     .map((c) => {
-      const icon = c.pass ? "✅" : "❌";
+      if (c.pass) {
+        return chalk.green(`✅ ${c.name}`);
+      }
       const fix = c.fix ? ` → ${c.fix}` : "";
-      return `${icon} ${c.name}${fix}`;
+      return chalk.red(`❌ ${c.name}${fix}`);
     })
     .join("\n");
 }

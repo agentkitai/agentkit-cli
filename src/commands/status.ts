@@ -1,5 +1,6 @@
 import { loadConfig } from "../config.js";
 import { SERVICE_REGISTRY } from "../services.js";
+import chalk from "chalk";
 
 export interface ServiceStatus {
   service: string;
@@ -55,12 +56,18 @@ export async function statusCommand(opts: StatusOptions): Promise<ServiceStatus[
 }
 
 export function formatStatusTable(results: ServiceStatus[]): string {
-  const icons = { running: "✅", down: "❌", disabled: "⚪" };
+  const icons: Record<string, string> = { running: "✅", down: "❌", disabled: "⚪" };
+  const colorFn: Record<string, (s: string) => string> = {
+    running: chalk.green,
+    down: chalk.red,
+    disabled: chalk.gray,
+  };
   const header = "Service        | Status     | Port  | Version";
   const sep = "---------------|------------|-------|--------";
   const rows = results.map((r) => {
     const name = r.service.padEnd(14);
-    const status = `${icons[r.status]} ${r.status}`.padEnd(10);
+    const rawStatus = `${icons[r.status]} ${r.status}`.padEnd(10);
+    const status = (colorFn[r.status] ?? ((s: string) => s))(rawStatus);
     const port = (r.port?.toString() ?? "-").padEnd(5);
     const version = r.version ?? "-";
     return `${name} | ${status} | ${port} | ${version}`;

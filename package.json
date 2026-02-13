@@ -1,14 +1,23 @@
 {
   "name": "agentkit",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "version": "0.1.0",
+  "description": "Unified CLI for the AgentKit ecosystem — manage all your AI agent services from one tool",
+  "main": "dist/cli.js",
+  "files": ["dist", "README.md"],
+  "bin": {
+    "agentkit": "./dist/cli.js"
   },
-  "keywords": [],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "keywords": ["agentkit", "cli", "ai", "agents", "devtools"],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agentkit/agentkit-cli"
+  },
   "type": "commonjs",
   "dependencies": {
     "@inquirer/prompts": "^8.2.0",

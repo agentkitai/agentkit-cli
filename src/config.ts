@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { parse, stringify } from "yaml";
+import { join, dirname, resolve } from "node:path";
 
 const ServiceConfigSchema = z.object({
   enabled: z.boolean(),
@@ -23,6 +24,18 @@ export const AgentKitConfigSchema = z.object({
 });
 
 export type AgentKitConfig = z.infer<typeof AgentKitConfigSchema>;
+
+export function findConfig(startDir?: string): string | null {
+  let dir = resolve(startDir ?? process.cwd());
+  for (let i = 0; i < 10; i++) {
+    const candidate = join(dir, "agentkit.config.yaml");
+    if (existsSync(candidate)) return candidate;
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
+}
 
 export function loadConfig(path: string): AgentKitConfig {
   const raw = readFileSync(path, "utf-8");

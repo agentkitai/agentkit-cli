@@ -1,7 +1,9 @@
+#!/usr/bin/env node
 import { Command } from "commander";
 import { registerInitCommand } from "./commands/init.js";
 import { statusCommand, formatStatusTable } from "./commands/status.js";
 import { doctorCommand, formatDoctorOutput } from "./commands/doctor.js";
+import { findConfig } from "./config.js";
 
 export function createCli(): Command {
   const program = new Command();
@@ -15,22 +17,37 @@ export function createCli(): Command {
   program
     .command("status")
     .description("Show status of all AgentKit services")
-    .option("-c, --config <path>", "Config file path", "agentkit.config.yaml")
+    .option("-c, --config <path>", "Config file path")
     .option("-t, --timeout <ms>", "Connection timeout in ms", "3000")
     .action(async (opts) => {
-      const results = await statusCommand({ config: opts.config, timeout: Number(opts.timeout) });
+      const configPath = opts.config ?? findConfig();
+      if (!configPath) {
+        console.log("No agentkit.config.yaml found. Run `agentkit init` to get started.");
+        return;
+      }
+      const results = await statusCommand({ config: configPath, timeout: Number(opts.timeout) });
       console.log(formatStatusTable(results));
     });
 
   program
     .command("doctor")
     .description("Run diagnostic checks on your AgentKit setup")
-    .option("-c, --config <path>", "Config file path", "agentkit.config.yaml")
+    .option("-c, --config <path>", "Config file path")
     .option("-t, --timeout <ms>", "Connection timeout in ms", "3000")
     .action(async (opts) => {
-      const checks = await doctorCommand({ config: opts.config, timeout: Number(opts.timeout) });
+      const configPath = opts.config ?? findConfig();
+      if (!configPath) {
+        console.log("No agentkit.config.yaml found. Run `agentkit init` to get started.");
+        return;
+      }
+      const checks = await doctorCommand({ config: configPath, timeout: Number(opts.timeout) });
       console.log(formatDoctorOutput(checks));
     });
 
   return program;
+}
+
+// Entry point when run directly
+if (require.main === module) {
+  createCli().parseAsync();
 }
