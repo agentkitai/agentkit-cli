@@ -109,6 +109,20 @@ When you run `status` or `doctor` without `--config`, the CLI walks up the direc
 No agentkit.config.yaml found. Run `agentkit init` to get started.
 ```
 
+
+## 🧰 AgentKit Ecosystem
+
+| Project | Description | |
+|---------|-------------|-|
+| [AgentLens](https://github.com/agentkitai/agentlens) | Observability & audit trail for AI agents | |
+| [Lore](https://github.com/agentkitai/lore) | Cross-agent memory and lesson sharing | |
+| [AgentGate](https://github.com/agentkitai/agentgate) | Human-in-the-loop approval gateway | |
+| [FormBridge](https://github.com/agentkitai/formbridge) | Agent-human mixed-mode forms | |
+| [AgentEval](https://github.com/agentkitai/agenteval) | Testing & evaluation framework | |
+| [agentkit-mesh](https://github.com/agentkitai/agentkit-mesh) | Agent discovery & delegation | |
+| **agentkit-cli** | Unified CLI orchestrator | ⬅️ you are here |
+| [agentkit-guardrails](https://github.com/agentkitai/agentkit-guardrails) | Reactive policy guardrails | |
+
 ## License
 
 ISC
