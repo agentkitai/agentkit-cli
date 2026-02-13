@@ -1,5 +1,5 @@
 {
-  "name": "agentkit",
+  "name": "@amit-paz/agentkit-cli",
   "version": "0.1.0",
   "description": "Unified CLI for the AgentKit ecosystem — manage all your AI agent services from one tool",
   "main": "dist/cli.js",
@@ -16,7 +16,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/agentkit/agentkit-cli"
+    "url": "https://github.com/agentkitai/agentkit-cli"
   },
   "type": "commonjs",
   "dependencies": {
