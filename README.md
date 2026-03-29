@@ -1,6 +1,17 @@
-# AgentKit CLI
+<p align="center">
+  <h1 align="center">⚡ AgentKit CLI</h1>
+  <p align="center">
+    <strong>Unified CLI for the AgentKit ecosystem</strong><br>
+    Manage all your AI agent services from one tool.
+  </p>
+  <p align="center">
+    <a href="https://www.npmjs.com/package/@amit-paz/agentkit-cli"><img src="https://img.shields.io/npm/v/%40amit-paz%2Fagentkit-cli?label=npm" alt="npm version"></a>
+    <a href="https://opensource.org/licenses/ISC"><img src="https://img.shields.io/badge/license-ISC-blue.svg" alt="License: ISC"></a>
+    <a href="https://github.com/agentkitai/agentkit-cli/actions"><img src="https://img.shields.io/github/actions/workflow/status/agentkitai/agentkit-cli/ci.yml?branch=main" alt="CI"></a>
+  </p>
+</p>
 
-Unified CLI for the [AgentKit](https://github.com/agentkit) ecosystem — manage all your AI agent services from one tool.
+---
 
 ## Quick Start
 
@@ -109,6 +120,9 @@ When you run `status` or `doctor` without `--config`, the CLI walks up the direc
 No agentkit.config.yaml found. Run `agentkit init` to get started.
 ```
 
+## 🤝 Contributing
+
+Contributions are welcome! Fork the repo, make your changes, and open a pull request. For major changes, open an issue first to discuss what you'd like to change.
 
 ## 🧰 AgentKit Ecosystem
 
@@ -125,4 +139,4 @@ No agentkit.config.yaml found. Run `agentkit init` to get started.
 
 ## License
 
-ISC
+[ISC](LICENSE) © [Amit Paz](https://github.com/amitpaz)
