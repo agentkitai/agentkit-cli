@@ -69,4 +69,26 @@ describe("Generators", () => {
     const toml = readFileSync(resolve(TMP, "pyproject.toml"), "utf-8");
     expect(toml).toContain("agentkit-agentgate");
   });
+
+  it("generates a pyproject.toml with a valid setuptools build-backend", () => {
+    mkdirSync(TMP, { recursive: true });
+    generateProject(TMP, pyConfig);
+    const toml = readFileSync(resolve(TMP, "pyproject.toml"), "utf-8");
+
+    // The build-backend must be the canonical, installable setuptools entry point.
+    // The previous value ("setuptools.backends._legacy:_Backend") does not exist
+    // and breaks `pip install -e .`.
+    expect(toml).toContain('build-backend = "setuptools.build_meta"');
+    expect(toml).not.toContain("setuptools.backends._legacy");
+
+    // ponytail: no TOML parser dependency available, so do a minimal structural
+    // parse of the [build-system] table instead of pulling one in.
+    const buildSystem = toml.split("[build-system]")[1] ?? "";
+    const backendMatch = buildSystem.match(/build-backend\s*=\s*"([^"]+)"/);
+    expect(backendMatch).not.toBeNull();
+    const backend = backendMatch![1];
+    // Valid backend is "module" or "module:object".
+    expect(backend).toMatch(/^[\w.]+(:[\w.]+)?$/);
+    expect(buildSystem).toMatch(/requires\s*=\s*\[/);
+  });
 });
