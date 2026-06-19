@@ -1,6 +1,7 @@
 import { loadConfig } from "../config.js";
 import { SERVICE_REGISTRY } from "../services.js";
 import { execSync } from "node:child_process";
+import { dirname, resolve } from "node:path";
 import chalk from "chalk";
 
 export interface CheckResult {
@@ -51,6 +52,10 @@ export async function doctorCommand(opts: DoctorOptions): Promise<CheckResult[]>
     });
   }
 
+  // Run docker compose against the project directory (where docker-compose.yml lives),
+  // not the CLI's cwd.
+  const projectDir = dirname(resolve(opts.config));
+
   // 3. Per-service checks
   for (const [key, def] of Object.entries(SERVICE_REGISTRY)) {
     const svcConfig = config.services[key as keyof typeof config.services];
@@ -58,11 +63,24 @@ export async function doctorCommand(opts: DoctorOptions): Promise<CheckResult[]>
 
     const port = svcConfig.port ?? def.defaultPort;
 
-    // Container running
+    // Container running: `docker compose ps` exits 0 even when nothing is up,
+    // so we must parse its output. `--format json` emits one JSON object per
+    // running service (or an empty string when none are running).
+    let containerRunning = false;
     try {
-      execSync(`docker compose ps --status running ${key}`, { stdio: "pipe", timeout: 10000 });
-      checks.push({ name: `${key} container`, pass: true });
+      const out = execSync(`docker compose ps --status running --format json ${key}`, {
+        stdio: "pipe",
+        timeout: 10000,
+        cwd: projectDir,
+        encoding: "utf-8",
+      });
+      containerRunning = String(out).trim().length > 0;
     } catch {
+      containerRunning = false;
+    }
+    if (containerRunning) {
+      checks.push({ name: `${key} container`, pass: true });
+    } else {
       checks.push({
         name: `${key} container`,
         pass: false,
