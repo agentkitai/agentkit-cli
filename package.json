@@ -13,7 +13,7 @@
   },
   "keywords": ["agentkit", "cli", "ai", "agents", "devtools"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/agentkitai/agentkit-cli"
