@@ -6,7 +6,7 @@
   </p>
   <p align="center">
     <a href="https://www.npmjs.com/package/@amit-paz/agentkit-cli"><img src="https://img.shields.io/npm/v/%40amit-paz%2Fagentkit-cli?label=npm" alt="npm version"></a>
-    <a href="https://opensource.org/licenses/ISC"><img src="https://img.shields.io/badge/license-ISC-blue.svg" alt="License: ISC"></a>
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
     <a href="https://github.com/agentkitai/agentkit-cli/actions"><img src="https://img.shields.io/github/actions/workflow/status/agentkitai/agentkit-cli/ci.yml?branch=main" alt="CI"></a>
   </p>
 </p>
@@ -16,7 +16,7 @@
 ## Quick Start
 
 ```bash
-npx agentkit init
+npx @amit-paz/agentkit-cli init
 ```
 
 This creates an `agentkit.config.yaml` in your project, sets up `docker-compose.yaml`, and scaffolds your workspace.
@@ -139,4 +139,4 @@ Contributions are welcome! Fork the repo, make your changes, and open a pull req
 
 ## License
 
-[ISC](LICENSE) © [Amit Paz](https://github.com/amitpaz)
+[MIT](LICENSE) © [Amit Paz](https://github.com/amitpaz)
