@@ -133,9 +133,7 @@ Contributions are welcome! Fork the repo, make your changes, and open a pull req
 | [AgentGate](https://github.com/agentkitai/agentgate) | Human-in-the-loop approval gateway | |
 | [FormBridge](https://github.com/agentkitai/formbridge) | Agent-human mixed-mode forms | |
 | [AgentEval](https://github.com/agentkitai/agenteval) | Testing & evaluation framework | |
-| [agentkit-mesh](https://github.com/agentkitai/agentkit-mesh) | Agent discovery & delegation | |
 | **agentkit-cli** | Unified CLI orchestrator | ⬅️ you are here |
-| [agentkit-guardrails](https://github.com/agentkitai/agentkit-guardrails) | Reactive policy guardrails | |
 
 ## License
 
