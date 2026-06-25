@@ -1,9 +1,12 @@
 {
   "name": "@amit-paz/agentkit-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unified CLI for the AgentKit ecosystem — manage all your AI agent services from one tool",
   "main": "dist/cli.js",
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "bin": {
     "agentkit": "./dist/cli.js"
   },
@@ -11,7 +14,13 @@
     "build": "tsc",
     "test": "vitest run"
   },
-  "keywords": ["agentkit", "cli", "ai", "agents", "devtools"],
+  "keywords": [
+    "agentkit",
+    "cli",
+    "ai",
+    "agents",
+    "devtools"
+  ],
   "author": "",
   "license": "MIT",
   "repository": {
