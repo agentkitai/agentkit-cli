@@ -6,7 +6,10 @@ import { parse } from "yaml";
 // Mock @inquirer/prompts before importing init
 vi.mock("@inquirer/prompts", () => ({
   input: vi.fn().mockResolvedValue("test-project"),
-  select: vi.fn().mockResolvedValue("typescript"),
+  // language → typescript; the new template prompt (#8) → default.
+  select: vi.fn().mockImplementation(async (opts: { message?: string }) =>
+    opts?.message?.toLowerCase().includes("template") ? "default" : "typescript",
+  ),
   checkbox: vi.fn().mockResolvedValue(["agentlens", "lore"]),
 }));
 

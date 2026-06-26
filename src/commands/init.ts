@@ -10,6 +10,12 @@ import { generateProject } from "../generators/project.js";
 export interface InitOptions {
   yes?: boolean;
   dir?: string;
+  template?: string;
+}
+
+/** "governed-agent" only when explicitly chosen — it is never the default (#8). */
+function normalizeTemplate(t: string | undefined): "default" | "governed-agent" {
+  return t === "governed-agent" ? "governed-agent" : "default";
 }
 
 function sanitizeName(name: string): string {
@@ -27,6 +33,7 @@ export async function initCommand(options: InitOptions): Promise<AgentKitConfig>
     config = {
       projectName: sanitizeName(dirName),
       language: "typescript",
+      template: normalizeTemplate(options.template), // default unless --template given
       services: {
         agentlens: { enabled: true, port: 3000 },
         lore: { enabled: true, port: 3001 },
@@ -49,6 +56,17 @@ export async function initCommand(options: InitOptions): Promise<AgentKitConfig>
       ],
     });
 
+    // Template choice — "default" is preselected; "governed-agent" is opt-in (#8).
+    const template = options.template
+      ? normalizeTemplate(options.template)
+      : await select({
+          message: "Project template:",
+          choices: [
+            { value: "default" as const, name: "Default — minimal starter" },
+            { value: "governed-agent" as const, name: "Governed agent — compliance-first (audit + approval gate + redacted memory)" },
+          ],
+        });
+
     const serviceKeys = Object.keys(SERVICE_REGISTRY);
     const enabledServices = await checkbox({
       message: "Select services to enable:",
@@ -68,7 +86,7 @@ export async function initCommand(options: InitOptions): Promise<AgentKitConfig>
       };
     }
 
-    config = { projectName: sanitizeName(projectName), language, services };
+    config = { projectName: sanitizeName(projectName), language, template, services };
   }
 
   const configPath = resolve(targetDir, "agentkit.config.yaml");
@@ -95,6 +113,7 @@ export function registerInitCommand(program: Command): void {
     .description("Initialize a new AgentKit project")
     .option("-y, --yes", "Skip prompts, use defaults")
     .option("-d, --dir <path>", "Target directory")
+    .option("--template <name>", "Project template: default | governed-agent (opt-in compliance-first)")
     .action(async (opts) => {
       await initCommand(opts);
     });
