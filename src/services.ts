@@ -13,7 +13,7 @@ export const SERVICE_REGISTRY: Record<string, ServiceDefinition> = {
     description: "Observability and monitoring for AI agents",
     defaultPort: 3000,
     healthEndpoint: "/api/health",
-    dockerImage: "agentkit/agentlens:latest",
+    dockerImage: "ghcr.io/agentkitai/agentlens:latest",
     dependencies: [],
   },
   lore: {
@@ -21,7 +21,7 @@ export const SERVICE_REGISTRY: Record<string, ServiceDefinition> = {
     description: "Knowledge management and RAG pipeline",
     defaultPort: 3001,
     healthEndpoint: "/health",
-    dockerImage: "agentkit/lore:latest",
+    dockerImage: "ghcr.io/agentkitai/lore:latest",
     dependencies: [],
   },
   agentgate: {
@@ -29,7 +29,7 @@ export const SERVICE_REGISTRY: Record<string, ServiceDefinition> = {
     description: "API gateway and rate limiting for agents",
     defaultPort: 3002,
     healthEndpoint: "/api/health",
-    dockerImage: "agentkit/agentgate:latest",
+    dockerImage: "ghcr.io/agentkitai/agentgate:latest",
     dependencies: [],
   },
   formbridge: {
@@ -37,7 +37,7 @@ export const SERVICE_REGISTRY: Record<string, ServiceDefinition> = {
     description: "Form generation and data collection",
     defaultPort: 3003,
     healthEndpoint: "/api/health",
-    dockerImage: "agentkit/formbridge:latest",
+    dockerImage: "ghcr.io/agentkitai/formbridge:latest",
     dependencies: [],
   },
   agenteval: {
@@ -45,7 +45,7 @@ export const SERVICE_REGISTRY: Record<string, ServiceDefinition> = {
     description: "Evaluation and benchmarking for AI agents",
     defaultPort: null,
     healthEndpoint: null,
-    dockerImage: "agentkit/agenteval:latest",
+    dockerImage: "ghcr.io/agentkitai/agenteval:latest",
     dependencies: [],
   },
 };
