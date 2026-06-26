@@ -4,6 +4,7 @@ import { registerInitCommand } from "./commands/init.js";
 import { statusCommand, formatStatusTable } from "./commands/status.js";
 import { doctorCommand, formatDoctorOutput } from "./commands/doctor.js";
 import { composeArgs, runCompose, projectDirFromConfig, type ComposeOpts } from "./commands/compose.js";
+import { registerIdentityCommand } from "./commands/identity.js";
 import { findConfig } from "./config.js";
 
 const NO_CONFIG = "No agentkit.config.yaml found. Run `agentkit init` to get started.";
@@ -26,6 +27,7 @@ export function createCli(): Command {
     .version("0.1.0");
 
   registerInitCommand(program);
+  registerIdentityCommand(program);
 
   program
     .command("status")
