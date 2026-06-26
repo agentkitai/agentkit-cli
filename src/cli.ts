@@ -9,6 +9,7 @@ import { registerAuditCommand } from "./commands/audit.js";
 import { registerEvidenceCommand } from "./commands/evidence.js";
 import { ensureSecrets, waitForHealth } from "./commands/up.js";
 import { runMcpServer } from "./mcp/server.js";
+import { runStackMcpServer } from "./mcp/stack-server.js";
 import { findConfig } from "./config.js";
 
 const NO_CONFIG = "No agentkit.config.yaml found. Run `agentkit init` to get started.";
@@ -40,6 +41,23 @@ export function createCli(): Command {
     .description("Run an MCP server exposing CLI verbs (init/status/doctor/identity/audit) as tools over stdio")
     .action(async () => {
       await runMcpServer();
+    });
+
+  program
+    .command("serve")
+    .description("Run an identity-scoped MCP server exposing the running stack over HTTP (stack#7)")
+    .requiredOption("-i, --identity <id>", "Agent identity to bind to (mint with `agentkit identity mint`)")
+    .option("-p, --port <n>", "HTTP port", "8770")
+    .option("--store <dir>", "Identity store root (default: ~/.agentkit)")
+    .action(async (opts) => {
+      try {
+        const { port } = await runStackMcpServer({ identityId: opts.identity, port: Number(opts.port), store: opts.store });
+        console.log(`✓ Stack MCP server bound to identity ${opts.identity} — listening on http://localhost:${port}/mcp`);
+        console.log("  (identity-scoped: every result is stamped servedBy this identity)");
+      } catch (err) {
+        console.error(`✗ ${err instanceof Error ? err.message : String(err)}`);
+        process.exit(1);
+      }
     });
 
   program
