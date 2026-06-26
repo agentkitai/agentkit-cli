@@ -8,6 +8,7 @@ import { registerIdentityCommand } from "./commands/identity.js";
 import { registerAuditCommand } from "./commands/audit.js";
 import { registerEvidenceCommand } from "./commands/evidence.js";
 import { ensureSecrets, waitForHealth } from "./commands/up.js";
+import { registerDemoCommand, runDemo, formatTour, shouldSeedDemo, markDemoSeeded } from "./commands/demo.js";
 import { runMcpServer } from "./mcp/server.js";
 import { runStackMcpServer } from "./mcp/stack-server.js";
 import { findConfig } from "./config.js";
@@ -35,6 +36,7 @@ export function createCli(): Command {
   registerIdentityCommand(program);
   registerAuditCommand(program);
   registerEvidenceCommand(program);
+  registerDemoCommand(program);
 
   program
     .command("mcp")
@@ -125,6 +127,15 @@ export function createCli(): Command {
           ? `\n✓ Stack ready in ${Math.round(w.waitedMs / 1000)}s`
           : `\n✗ Stack not healthy after ${Math.round(w.waitedMs / 1000)}s (agentlens excluded as known-degraded)`,
       );
+      // First-run demo seed + governed guided tour (#stack5). Best-effort.
+      if (w.ready && shouldSeedDemo(dir)) {
+        try {
+          console.log(formatTour(await runDemo({})));
+          markDemoSeeded(dir);
+        } catch {
+          /* demo is best-effort — never fail `up` on it */
+        }
+      }
       process.exit(w.ready ? 0 : 1);
     });
 
