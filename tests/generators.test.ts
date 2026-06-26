@@ -57,8 +57,10 @@ describe("Generators", () => {
     expect(existsSync(resolve(TMP, "tsconfig.json"))).toBe(true);
     expect(existsSync(resolve(TMP, "src/index.ts"))).toBe(true);
     const pkg = JSON.parse(readFileSync(resolve(TMP, "package.json"), "utf-8"));
-    expect(pkg.dependencies).toHaveProperty("@agentkit/agentlens");
-    expect(pkg.dependencies).toHaveProperty("@agentkit/lore");
+    expect(pkg.dependencies).toHaveProperty("@agentkitai/agentlens-sdk");
+    // lore has no TS SDK — it's run as a service, not imported (no npm dep)
+    expect(pkg.dependencies).not.toHaveProperty("@agentkit/lore");
+    expect(pkg.dependencies).not.toHaveProperty("@agentkit/agentlens");
   });
 
   it("generates Python project scaffold", () => {
