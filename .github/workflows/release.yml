@@ -1,0 +1,36 @@
+name: Release
+
+# A `vX.Y.Z` tag publishes @agentkitai/agentkit-cli to npm via OIDC trusted
+# publishing (no NPM_TOKEN). pnpm publish skips a version already on the
+# registry, so re-running is idempotent.
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  npm:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC trusted publishing — no NPM_TOKEN needed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      # No registry-url: setup-node would write an .npmrc with a NODE_AUTH_TOKEN
+      # placeholder that breaks OIDC. Default registry is what trusted publishing targets.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Trusted publishing needs npm CLI >= 11.5.1; pnpm delegates publish to it.
+      - run: npm install -g npm@latest
+      - run: pnpm install
+      - run: pnpm run build
+      - run: pnpm test
+      - name: Publish (OIDC trusted publishing)
+        # No token: npm auto-detects the GitHub OIDC environment. Provenance is
+        # generated automatically under trusted publishing.
+        run: pnpm publish --access public --no-git-checks
