@@ -47,7 +47,7 @@ describe("Generators", () => {
     const raw = readFileSync(resolve(TMP, "docker-compose.yml"), "utf-8");
     const parsed = parse(raw);
     expect(parsed.version).toBe("3.8");
-    expect(parsed.services.agentlens.image).toBe("agentkit/agentlens:latest");
+    expect(parsed.services.agentlens.image).toBe("ghcr.io/agentkitai/agentlens:latest");
   });
 
   it("generates TypeScript project scaffold", () => {

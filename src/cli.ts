@@ -6,6 +6,7 @@ import { doctorCommand, formatDoctorOutput } from "./commands/doctor.js";
 import { composeArgs, runCompose, projectDirFromConfig, type ComposeOpts } from "./commands/compose.js";
 import { registerIdentityCommand } from "./commands/identity.js";
 import { registerAuditCommand } from "./commands/audit.js";
+import { ensureSecrets, waitForHealth } from "./commands/up.js";
 import { findConfig } from "./config.js";
 
 const NO_CONFIG = "No agentkit.config.yaml found. Run `agentkit init` to get started.";
@@ -62,14 +63,42 @@ export function createCli(): Command {
       }
     });
 
-  // Thin `docker compose` wrappers (#11) — NOT an orchestrator.
+  // `up` — governed orchestration (#7): fresh secrets on first run, governance
+  // profile by default, optional --wait health gate. (down/logs stay thin.)
   program
     .command("up")
-    .description("Start the stack (docker compose up -d)")
+    .description("Start the governed stack (fresh secrets, governance profile, optional --wait)")
     .option("-c, --config <path>", "Config file path")
-    .option("-p, --profile <name>", "Compose profile (minimal | governance | full)")
+    .option("-p, --profile <name>", "Compose profile (default: governance)")
     .option("--no-detach", "Run in the foreground")
-    .action((opts) => runComposeVerb("up", opts.config, { profile: opts.profile, detached: opts.detach }));
+    .option("-w, --wait", "Block until the stack is healthy (agentlens excluded — known version-skew)")
+    .option("-t, --timeout <ms>", "--wait timeout in ms", "120000")
+    .action(async (opts) => {
+      const cfg = opts.config ?? findConfig();
+      if (!cfg) {
+        console.log(NO_CONFIG);
+        return;
+      }
+      const dir = projectDirFromConfig(cfg);
+      const secrets = ensureSecrets(dir);
+      if (secrets.created) {
+        console.log(`✓ Generated fresh secrets in ${secrets.path} (${"LORE_API_KEY/ADMIN_API_KEY/JWT_SECRET"}) — keep them safe, never commit.\n`);
+      }
+      const profile = opts.profile ?? "governance"; // governance-by-default (#3)
+      const code = runCompose(dir, composeArgs("up", { profile, detached: opts.detach }));
+      if (code !== 0 || !opts.wait) {
+        process.exit(code);
+      }
+      console.log("\nWaiting for the stack to become healthy…");
+      const w = await waitForHealth(cfg, { timeoutMs: Number(opts.timeout) });
+      console.log("\n" + formatStatusTable(w.statuses));
+      console.log(
+        w.ready
+          ? `\n✓ Stack ready in ${Math.round(w.waitedMs / 1000)}s`
+          : `\n✗ Stack not healthy after ${Math.round(w.waitedMs / 1000)}s (agentlens excluded as known-degraded)`,
+      );
+      process.exit(w.ready ? 0 : 1);
+    });
 
   program
     .command("down")
