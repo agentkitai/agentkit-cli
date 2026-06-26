@@ -7,6 +7,9 @@ import {
   tsTsconfigTemplate,
   pyMainTemplate,
   pyProjectTomlTemplate,
+  governedAgentTsTemplate,
+  governedAgentPyTemplate,
+  governanceDocsTemplate,
 } from "./templates.js";
 
 function safeWrite(path: string, content: string): void {
@@ -31,7 +34,13 @@ function generateTypeScriptProject(targetDir: string, config: AgentKitConfig): v
 
   safeWrite(resolve(targetDir, "package.json"), tsPackageJsonTemplate(config));
   safeWrite(resolve(targetDir, "tsconfig.json"), tsTsconfigTemplate());
-  writeFileSync(resolve(srcDir, "index.ts"), tsIndexTemplate(config), "utf-8");
+  const governed = config.template === "governed-agent";
+  writeFileSync(
+    resolve(srcDir, "index.ts"),
+    governed ? governedAgentTsTemplate(config) : tsIndexTemplate(config),
+    "utf-8",
+  );
+  if (governed) safeWrite(resolve(targetDir, "GOVERNANCE.md"), governanceDocsTemplate(config));
 }
 
 function generatePythonProject(targetDir: string, config: AgentKitConfig): void {
@@ -39,5 +48,11 @@ function generatePythonProject(targetDir: string, config: AgentKitConfig): void 
   mkdirSync(srcDir, { recursive: true });
 
   safeWrite(resolve(targetDir, "pyproject.toml"), pyProjectTomlTemplate(config));
-  writeFileSync(resolve(srcDir, "main.py"), pyMainTemplate(config), "utf-8");
+  const governed = config.template === "governed-agent";
+  writeFileSync(
+    resolve(srcDir, "main.py"),
+    governed ? governedAgentPyTemplate(config) : pyMainTemplate(config),
+    "utf-8",
+  );
+  if (governed) safeWrite(resolve(targetDir, "GOVERNANCE.md"), governanceDocsTemplate(config));
 }

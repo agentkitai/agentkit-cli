@@ -14,6 +14,10 @@ export type ServiceConfig = z.infer<typeof ServiceConfigSchema>;
 export const AgentKitConfigSchema = z.object({
   projectName: z.string().min(1),
   language: z.enum(["typescript", "python"]),
+  // Project scaffold (#8). Optional + defaults to "default" so configs written
+  // before this field still parse. "governed-agent" is an opt-in compliance-first
+  // scaffold (audit + approval-gate + redacted-memory patterns pre-wired).
+  template: z.enum(["default", "governed-agent"]).optional(),
   services: z.object({
     agentlens: ServiceConfigSchema.optional(),
     lore: ServiceConfigSchema.optional(),
