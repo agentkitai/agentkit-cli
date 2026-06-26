@@ -1,5 +1,5 @@
 {
-  "name": "@amit-paz/agentkit-cli",
+  "name": "@agentkitai/agentkit-cli",
   "version": "0.1.1",
   "description": "Unified CLI for the AgentKit ecosystem — manage all your AI agent services from one tool",
   "main": "dist/cli.js",
@@ -9,6 +9,9 @@
   ],
   "bin": {
     "agentkit": "./dist/cli.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsc",
