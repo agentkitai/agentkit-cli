@@ -53,6 +53,24 @@ agenteval      | ⚪ disabled | -     | -
 Options:
 - `-c, --config <path>` — Config file path (auto-detected if omitted)
 - `-t, --timeout <ms>` — Connection timeout (default: 3000)
+- `-w, --watch [seconds]` — Live-refresh the table every N seconds (default 2; Ctrl+C to exit)
+
+### `agentkit up` / `down` / `logs`
+
+Thin wrappers around `docker compose` in your stack directory (they do **not**
+reimplement an orchestrator):
+
+```
+$ agentkit up --profile minimal     # docker compose --profile minimal up -d
+$ agentkit logs -f lore             # docker compose logs -f lore
+$ agentkit down -v                  # docker compose down -v  (removes volumes)
+```
+
+Options:
+- `up`: `-p, --profile <name>` (minimal | governance | full), `--no-detach`
+- `down`: `-v, --volumes` (also remove volumes)
+- `logs [service]`: `-f, --follow`
+- all: `-c, --config <path>` (locates the stack's `docker-compose.yml`)
 
 ### `agentkit doctor`
 
