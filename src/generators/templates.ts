@@ -16,11 +16,10 @@ console.log("Enabled services: ${enabledServices.join(", ")}");
 export function tsPackageJsonTemplate(config: AgentKitConfig): string {
   const deps: Record<string, string> = {};
   const services = config.services;
-  if (services.agentlens?.enabled) deps["@agentkit/agentlens"] = "latest";
-  if (services.lore?.enabled) deps["@agentkit/lore"] = "latest";
-  if (services.agentgate?.enabled) deps["@agentkit/agentgate"] = "latest";
-  if (services.formbridge?.enabled) deps["@agentkit/formbridge"] = "latest";
-  if (services.agenteval?.enabled) deps["@agentkit/agenteval"] = "latest";
+  // ponytail: only products with a real published TS SDK get an npm dep.
+  // lore/formbridge/agenteval are run as services (stack/HTTP/MCP), not imported — no npm dep.
+  if (services.agentlens?.enabled) deps["@agentkitai/agentlens-sdk"] = "latest";
+  if (services.agentgate?.enabled) deps["@agentkitai/agentgate-sdk"] = "latest";
 
   return JSON.stringify(
     {
