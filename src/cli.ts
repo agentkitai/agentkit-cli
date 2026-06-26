@@ -6,6 +6,7 @@ import { doctorCommand, formatDoctorOutput } from "./commands/doctor.js";
 import { composeArgs, runCompose, projectDirFromConfig, type ComposeOpts } from "./commands/compose.js";
 import { registerIdentityCommand } from "./commands/identity.js";
 import { registerAuditCommand } from "./commands/audit.js";
+import { registerEvidenceCommand } from "./commands/evidence.js";
 import { ensureSecrets, waitForHealth } from "./commands/up.js";
 import { runMcpServer } from "./mcp/server.js";
 import { findConfig } from "./config.js";
@@ -32,6 +33,7 @@ export function createCli(): Command {
   registerInitCommand(program);
   registerIdentityCommand(program);
   registerAuditCommand(program);
+  registerEvidenceCommand(program);
 
   program
     .command("mcp")
