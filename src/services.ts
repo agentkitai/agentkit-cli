@@ -19,7 +19,7 @@ export const SERVICE_REGISTRY: Record<string, ServiceDefinition> = {
   lore: {
     name: "Lore",
     description: "Knowledge management and RAG pipeline",
-    defaultPort: 3001,
+    defaultPort: 8765,
     healthEndpoint: "/health",
     dockerImage: "ghcr.io/agentkitai/lore:latest",
     dependencies: [],

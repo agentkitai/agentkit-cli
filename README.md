@@ -46,7 +46,7 @@ $ agentkit status
 Service        | Status     | Port  | Version
 ---------------|------------|-------|--------
 agentlens      | ✅ running | 3000  | 1.2.0
-lore           | ❌ down    | 3001  | -
+lore           | ✅ running | 8765  | 1.4.2
 agenteval      | ⚪ disabled | -     | -
 ```
 
@@ -101,7 +101,7 @@ services:
     port: 3000
   lore:
     enabled: true
-    port: 3001
+    port: 8765
   agentgate:
     enabled: false
   formbridge:
@@ -125,7 +125,7 @@ services:
 | Service | Default Port | Description |
 |---------|-------------|-------------|
 | AgentLens | 3000 | Observability and monitoring for AI agents |
-| Lore | 3001 | Knowledge management and RAG pipeline |
+| Lore | 8765 | Knowledge management and RAG pipeline |
 | AgentGate | 3002 | API gateway and rate limiting |
 | FormBridge | 3003 | Form generation and data collection |
 | AgentEval | — | Evaluation and benchmarking (CLI-only) |

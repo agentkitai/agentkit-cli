@@ -18,7 +18,7 @@ describe("Service Registry", () => {
 
   it("services have correct default ports", () => {
     expect(SERVICE_REGISTRY.agentlens.defaultPort).toBe(3000);
-    expect(SERVICE_REGISTRY.lore.defaultPort).toBe(3001);
+    expect(SERVICE_REGISTRY.lore.defaultPort).toBe(8765);
     expect(SERVICE_REGISTRY.agentgate.defaultPort).toBe(3002);
     expect(SERVICE_REGISTRY.formbridge.defaultPort).toBe(3003);
   });

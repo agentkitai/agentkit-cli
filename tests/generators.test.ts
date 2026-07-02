@@ -13,7 +13,7 @@ const tsConfig: AgentKitConfig = {
   language: "typescript",
   services: {
     agentlens: { enabled: true, port: 3000 },
-    lore: { enabled: true, port: 3001 },
+    lore: { enabled: true, port: 8765 },
   },
 };
 
@@ -32,13 +32,23 @@ describe("Generators", () => {
 
   it("buildDockerCompose only includes enabled services", () => {
     const dc = buildDockerCompose(tsConfig);
-    expect(Object.keys(dc.services)).toEqual(["agentlens", "lore"]);
+    // Enabling lore also pulls in its Postgres (lore-db), matching agentkit-stack.
+    expect(Object.keys(dc.services)).toEqual(["agentlens", "lore", "lore-db"]);
     expect(dc.networks).toHaveProperty("agentkit");
   });
 
   it("docker-compose has correct port mapping", () => {
     const dc = buildDockerCompose(tsConfig);
     expect(dc.services.agentlens.ports).toEqual(["3000:3000"]);
+  });
+
+  it("lore is wired to boot: 8765, Postgres, and a seeded API key", () => {
+    const dc = buildDockerCompose(tsConfig);
+    expect(dc.services.lore.ports).toEqual(["8765:8765"]);
+    expect(dc.services.lore.environment.DATABASE_URL).toContain("lore-db:5432");
+    expect(dc.services.lore.environment.LORE_API_KEY).toContain("LORE_API_KEY");
+    expect(dc.services.lore.depends_on).toHaveProperty("lore-db");
+    expect(dc.services["lore-db"].image).toContain("pgvector");
   });
 
   it("generates valid YAML docker-compose", () => {
@@ -69,7 +79,10 @@ describe("Generators", () => {
     expect(existsSync(resolve(TMP, "pyproject.toml"))).toBe(true);
     expect(existsSync(resolve(TMP, "src/main.py"))).toBe(true);
     const toml = readFileSync(resolve(TMP, "pyproject.toml"), "utf-8");
-    expect(toml).toContain("agentkit-agentgate");
+    // Services are run via compose, not imported — no fake `agentkit-*` PyPI deps
+    // (they never existed and broke `pip install -e .`).
+    expect(toml).not.toContain("agentkit-agentgate");
+    expect(toml).not.toContain("agentkit-lore");
   });
 
   it("generates a pyproject.toml with a valid setuptools build-backend", () => {

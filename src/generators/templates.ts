@@ -82,19 +82,19 @@ if __name__ == "__main__":
 export function pyProjectTomlTemplate(config: AgentKitConfig): string {
   const deps: string[] = [];
   const services = config.services;
-  if (services.agentlens?.enabled) deps.push('"agentkit-agentlens"');
-  if (services.lore?.enabled) deps.push('"agentkit-lore"');
-  if (services.agentgate?.enabled) deps.push('"agentkit-agentgate"');
-  if (services.formbridge?.enabled) deps.push('"agentkit-formbridge"');
-  if (services.agenteval?.enabled) deps.push('"agentkit-agenteval"');
+  // ponytail: mirror the TS template — the products are run as services (compose
+  // /HTTP/MCP), not imported, so no dep. The old `agentkit-<svc>` names were never
+  // published to PyPI and broke `pip install -e .`. Lore does ship a real client
+  // (`lore-sdk`); add it only if a project actually imports the SDK.
+  if (services.lore?.enabled) deps.push('"lore-sdk"');
+
+  const depsBlock = deps.length ? `\n  ${deps.join(",\n  ")}\n` : "";
 
   return `[project]
 name = "${config.projectName}"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = [
-  ${deps.join(",\n  ")}
-]
+dependencies = [${depsBlock}]
 
 [build-system]
 requires = ["setuptools>=68.0"]
