@@ -36,7 +36,7 @@ describe("Config Schema & IO", () => {
       projectName: "myproject",
       language: "python" as const,
       services: {
-        lore: { enabled: true, port: 3001 },
+        lore: { enabled: true, port: 8765 },
         agenteval: { enabled: false },
       },
     };

@@ -36,7 +36,7 @@ export async function initCommand(options: InitOptions): Promise<AgentKitConfig>
       template: normalizeTemplate(options.template), // default unless --template given
       services: {
         agentlens: { enabled: true, port: 3000 },
-        lore: { enabled: true, port: 3001 },
+        lore: { enabled: true, port: 8765 },
         agentgate: { enabled: true, port: 3002 },
         formbridge: { enabled: true, port: 3003 },
         agenteval: { enabled: true },
