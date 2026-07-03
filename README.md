@@ -19,7 +19,7 @@
 npx @agentkitai/agentkit-cli init
 ```
 
-This creates an `agentkit.config.yaml` in your project, sets up `docker-compose.yaml`, and scaffolds your workspace.
+This creates an `agentkit.config.yaml` in your project, sets up `docker-compose.yml`, and scaffolds your workspace.
 
 ## Commands
 
@@ -57,17 +57,23 @@ Options:
 
 ### `agentkit up` / `down` / `logs`
 
-Thin wrappers around `docker compose` in your stack directory (they do **not**
-reimplement an orchestrator):
+`up` starts the **governed** stack — it is not a thin `docker compose up -d`
+wrapper. On first run it generates fresh secrets
+(`LORE_API_KEY` / `ADMIN_API_KEY` / `JWT_SECRET`) via `ensureSecrets()`, defaults
+to the `governance` profile when none is given, and (with `--wait`) seeds demo
+data on first run once the stack is healthy. `down` and `logs` stay thin wrappers
+around `docker compose` in your stack directory:
 
 ```
-$ agentkit up --profile minimal     # docker compose --profile minimal up -d
+$ agentkit up                       # fresh secrets + governance profile, then compose up -d
+$ agentkit up --profile minimal     # override the default profile
+$ agentkit up --wait                # block until healthy, then first-run demo seed
 $ agentkit logs -f lore             # docker compose logs -f lore
 $ agentkit down -v                  # docker compose down -v  (removes volumes)
 ```
 
 Options:
-- `up`: `-p, --profile <name>` (minimal | governance | full), `--no-detach`
+- `up`: `-p, --profile <name>` (minimal | governance | full, default: governance), `--no-detach`, `-w, --wait` (block until the stack is healthy), `-t, --timeout <ms>` (`--wait` timeout, default: 120000)
 - `down`: `-v, --volumes` (also remove volumes)
 - `logs [service]`: `-f, --follow`
 - all: `-c, --config <path>` (locates the stack's `docker-compose.yml`)
