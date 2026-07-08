@@ -22,7 +22,7 @@ jobs:
           version: 10
       # No registry-url: setup-node would write an .npmrc with a NODE_AUTH_TOKEN
       # placeholder that breaks OIDC. Default registry is what trusted publishing targets.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
       # Trusted publishing needs npm CLI >= 11.5.1; pnpm delegates publish to it.
